@@ -46,3 +46,6 @@ build and install **JUCE** with these config in VSCode.
 4. Open `File`, then `Global Paths...`, set the paths to where you extracted/cloned **JUCE**.
 
 Follow the rest of the tutorial.
+
+To build, go to `$Project/Builds/LinuxMakefile` and run `CONFIG=Release make -j10`.  
+To run, go to `$Project/Builds/LinuxMakefile/build` and run `./$Project`.
