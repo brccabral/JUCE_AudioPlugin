@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <optional>
 
 //==============================================================================
 /**
@@ -55,6 +56,10 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    // * adds a control panel
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
     //==============================================================================
