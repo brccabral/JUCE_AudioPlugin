@@ -1,2 +1,3 @@
 .vscode/
-Builds/
+Builds/LinuxMakefile/build/
+Builds/LinuxMakefile/make_helpers/
