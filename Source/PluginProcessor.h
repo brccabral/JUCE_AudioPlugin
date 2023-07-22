@@ -9,7 +9,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <optional>
 
 //==============================================================================
 /**
@@ -62,6 +61,9 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
+
+    using Filter = juce::dsp::IIR::Filter<float>;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlugin_JUCEAudioProcessor)
 };
