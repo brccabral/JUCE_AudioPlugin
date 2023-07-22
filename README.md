@@ -49,3 +49,5 @@ Follow the rest of the tutorial.
 
 To build, go to `$Project/Builds/LinuxMakefile` and run `CONFIG=Release make -j10`.  
 To run, go to `$Project/Builds/LinuxMakefile/build` and run `./$Project`.
+
+To configure your IDE, check `JUCE_CPPFLAGS` from the `Makefile`.
