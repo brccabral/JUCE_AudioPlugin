@@ -10,6 +10,14 @@
 
 #include <JuceHeader.h>
 
+using Filter = juce::dsp::IIR::Filter<float>;
+
+using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
+
+// * chain will process single audio to all defined processors
+using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
+
+
 //==============================================================================
 /**
 */
@@ -61,8 +69,7 @@ public:
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
-
-    using Filter = juce::dsp::IIR::Filter<float>;
+    MonoChain leftChain, rightChain;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlugin_JUCEAudioProcessor)

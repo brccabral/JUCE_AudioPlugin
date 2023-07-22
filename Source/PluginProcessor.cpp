@@ -95,6 +95,16 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay (double sampleRate, int sampl
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
+    juce::dsp::ProcessSpec spec;
+
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = 1; // * mono chain
+
+    leftChain.prepare(spec);
+    rightChain.prepare(spec);
+
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
