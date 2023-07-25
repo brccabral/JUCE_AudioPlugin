@@ -329,43 +329,28 @@ void AudioPlugin_JUCEAudioProcessor::updateCutFilter(ChainType &lowCut,
     lowCut.template setBypassed<2>(true);
     lowCut.template setBypassed<3>(true);
 
+    // * leaverage switch pass-through to get all necessary case statements
     switch (slope)
     {
+    case Slope_48:
+    {
+        lowCut.template get<3>().coefficients = cutCoefficients[3];
+        lowCut.template setBypassed<3>(false);
+    }
+    case Slope_36:
+    {
+        lowCut.template get<2>().coefficients = cutCoefficients[2];
+        lowCut.template setBypassed<2>(false);
+    }
+    case Slope_24:
+    {
+        lowCut.template get<1>().coefficients = cutCoefficients[1];
+        lowCut.template setBypassed<1>(false);
+    }
     case Slope_12:
     {
         lowCut.template get<0>().coefficients = cutCoefficients[0];
         lowCut.template setBypassed<0>(false);
-        break;
     }
-    case Slope_24:
-    {
-        lowCut.template get<0>().coefficients = cutCoefficients[0];
-        lowCut.template setBypassed<0>(false);
-        lowCut.template get<1>().coefficients = cutCoefficients[1];
-        lowCut.template setBypassed<1>(false);
-        break;
-    }
-    case Slope_36:
-    {
-        lowCut.template get<0>().coefficients = cutCoefficients[0];
-        lowCut.template setBypassed<0>(false);
-        lowCut.template get<1>().coefficients = cutCoefficients[1];
-        lowCut.template setBypassed<1>(false);
-        lowCut.template get<2>().coefficients = cutCoefficients[2];
-        lowCut.template setBypassed<2>(false);
-        break;
-    }
-    case Slope_48:
-    {
-        lowCut.template get<0>().coefficients = cutCoefficients[0];
-        lowCut.template setBypassed<0>(false);
-        lowCut.template get<1>().coefficients = cutCoefficients[1];
-        lowCut.template setBypassed<1>(false);
-        lowCut.template get<3>().coefficients = cutCoefficients[3];
-        lowCut.template setBypassed<3>(false);
-        break;
-    }
-    default:
-        break;
     }
 }
