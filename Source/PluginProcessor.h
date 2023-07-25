@@ -17,6 +17,16 @@ using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>;
 // * chain will process single audio to all defined processors
 using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, CutFilter>;
 
+// * structure to hold our parameters
+struct ChainSettings
+{
+    float peakFreq{0}, peakGainInDecibels{0}, peakQuality{1.f};
+    float lowCutFreq{0}, highCutFreq{0};
+    int lowCutSlope{0}, highCutSlope{0};
+};
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+
 //==============================================================================
 /**
  */
