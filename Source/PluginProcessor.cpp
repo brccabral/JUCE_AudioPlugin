@@ -166,6 +166,53 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
     default:
         break;
     }
+
+    auto &rightLowCut = leftChain.get<ChainPositions::LowCut>();
+
+    rightLowCut.setBypassed<0>(true);
+    rightLowCut.setBypassed<1>(true);
+    rightLowCut.setBypassed<2>(true);
+    rightLowCut.setBypassed<3>(true);
+
+    switch (chainSettings.lowCutSlope)
+    {
+    case Slope_12:
+    {
+        rightLowCut.get<0>().coefficients = cutCoefficients[0];
+        rightLowCut.setBypassed<0>(false);
+        break;
+    }
+    case Slope_24:
+    {
+        rightLowCut.get<0>().coefficients = cutCoefficients[0];
+        rightLowCut.setBypassed<0>(false);
+        rightLowCut.get<1>().coefficients = cutCoefficients[1];
+        rightLowCut.setBypassed<1>(false);
+        break;
+    }
+    case Slope_36:
+    {
+        rightLowCut.get<0>().coefficients = cutCoefficients[0];
+        rightLowCut.setBypassed<0>(false);
+        rightLowCut.get<1>().coefficients = cutCoefficients[1];
+        rightLowCut.setBypassed<1>(false);
+        rightLowCut.get<2>().coefficients = cutCoefficients[2];
+        rightLowCut.setBypassed<2>(false);
+        break;
+    }
+    case Slope_48:
+    {
+        rightLowCut.get<0>().coefficients = cutCoefficients[0];
+        rightLowCut.setBypassed<0>(false);
+        rightLowCut.get<1>().coefficients = cutCoefficients[1];
+        rightLowCut.setBypassed<1>(false);
+        rightLowCut.get<3>().coefficients = cutCoefficients[3];
+        rightLowCut.setBypassed<3>(false);
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
