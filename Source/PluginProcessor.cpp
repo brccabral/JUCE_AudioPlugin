@@ -107,13 +107,7 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
 
     auto chainSettings = getChainSettings(apvts);
 
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
-                                                                                chainSettings.peakFreq,
-                                                                                chainSettings.peakQuality,
-                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
-
-    leftChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
-    rightChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
+    updatePeakFilter(chainSettings);
 
     auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
         chainSettings.lowCutFreq,
@@ -266,13 +260,7 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     // * update parameters before process audio
     auto chainSettings = getChainSettings(apvts);
 
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
-                                                                                chainSettings.peakFreq,
-                                                                                chainSettings.peakQuality,
-                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
-
-    leftChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
-    rightChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
+    updatePeakFilter(chainSettings);
 
     auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
         chainSettings.lowCutFreq,
@@ -488,4 +476,21 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState &apvts)
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HighCut Slope")->load());
 
     return settings;
+}
+
+void AudioPlugin_JUCEAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
+{
+    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+                                                                                chainSettings.peakFreq,
+                                                                                chainSettings.peakQuality,
+                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+
+    updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+}
+
+// * coefficients are allocated on the Heap, we need to dereference
+void updateCoefficients(Coefficients &old, const Coefficients &replacements)
+{
+    *old = *replacements;
 }
