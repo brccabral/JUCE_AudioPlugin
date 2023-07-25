@@ -109,27 +109,8 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
 
     updatePeakFilter(chainSettings);
 
-    auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
-        chainSettings.lowCutFreq,
-        sampleRate,
-        (chainSettings.lowCutFreq + 1) * 2);
-
-    auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
-    auto &rightLowCut = rightChain.get<ChainPositions::LowCut>();
-
-    updateCutFilter(leftLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
-    updateCutFilter(rightLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
-    
-    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
-        chainSettings.highCutFreq,
-        sampleRate,
-        (chainSettings.highCutFreq + 1) * 2);
-
-    auto &lefthighCut = leftChain.get<ChainPositions::HighCut>();
-    auto &righthighCut = rightChain.get<ChainPositions::HighCut>();
-
-    updateCutFilter(lefthighCut, highCutCoefficients, chainSettings.highCutSlope);
-    updateCutFilter(righthighCut, highCutCoefficients, chainSettings.highCutSlope);
+    updateLowCutFilters(chainSettings);
+    updateHighCutFilters(chainSettings);
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
@@ -185,27 +166,8 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
 
     updatePeakFilter(chainSettings);
 
-    auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
-        chainSettings.lowCutFreq,
-        getSampleRate(),
-        (chainSettings.lowCutFreq + 1) * 2);
-
-    auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
-    auto &rightLowCut = rightChain.get<ChainPositions::LowCut>();
-
-    updateCutFilter(leftLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
-    updateCutFilter(rightLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
-    
-    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
-        chainSettings.highCutFreq,
-        getSampleRate(),
-        (chainSettings.highCutFreq + 1) * 2);
-
-    auto &lefthighCut = leftChain.get<ChainPositions::HighCut>();
-    auto &righthighCut = rightChain.get<ChainPositions::HighCut>();
-
-    updateCutFilter(lefthighCut, highCutCoefficients, chainSettings.highCutSlope);
-    updateCutFilter(righthighCut, highCutCoefficients, chainSettings.highCutSlope);
+    updateLowCutFilters(chainSettings);
+    updateHighCutFilters(chainSettings);
 
     // * wrap the buffer into left/right blocks that can be used by the Chain process
     juce::dsp::AudioBlock<float> block(buffer);
@@ -375,4 +337,32 @@ void AudioPlugin_JUCEAudioProcessor::updateCutFilter(ChainType &lowCut,
         lowCut.template setBypassed<0>(false);
     }
     }
+}
+
+void AudioPlugin_JUCEAudioProcessor::updateLowCutFilters(const ChainSettings &chainSettings)
+{
+    auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+        chainSettings.lowCutFreq,
+        getSampleRate(),
+        (chainSettings.lowCutFreq + 1) * 2);
+
+    auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
+    auto &rightLowCut = rightChain.get<ChainPositions::LowCut>();
+
+    updateCutFilter(leftLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(rightLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
+}
+
+void AudioPlugin_JUCEAudioProcessor::updateHighCutFilters(const ChainSettings &chainSettings)
+{
+    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
+        chainSettings.highCutFreq,
+        getSampleRate(),
+        (chainSettings.highCutFreq + 1) * 2);
+
+    auto &leftHighCut = leftChain.get<ChainPositions::HighCut>();
+    auto &rightHighCut = rightChain.get<ChainPositions::HighCut>();
+
+    updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
+    updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
 }

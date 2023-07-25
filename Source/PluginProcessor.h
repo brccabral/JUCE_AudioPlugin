@@ -106,6 +106,9 @@ private:
                          const CoefficientType &cutCoefficients,
                          const Slope &slope);
 
+    void updateLowCutFilters(const ChainSettings &chainSettings);
+    void updateHighCutFilters(const ChainSettings &chainSettings);
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessor)
 };
