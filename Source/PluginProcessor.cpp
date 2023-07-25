@@ -117,8 +117,8 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
     auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
     auto &rightLowCut = leftChain.get<ChainPositions::LowCut>();
 
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings);
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
@@ -182,8 +182,8 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
     auto &rightLowCut = leftChain.get<ChainPositions::LowCut>();
 
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings);
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
 
     // * wrap the buffer into left/right blocks that can be used by the Chain process
     juce::dsp::AudioBlock<float> block(buffer);
@@ -322,14 +322,14 @@ void AudioPlugin_JUCEAudioProcessor::updateCoefficients(Coefficients &old, const
 template <typename ChainType, typename CoefficientType>
 void AudioPlugin_JUCEAudioProcessor::updateCutFilter(ChainType &lowCut,
                                                      const CoefficientType &cutCoefficients,
-                                                     const ChainSettings &chainSettings)
+                                                     const Slope &slope)
 {
     lowCut.template setBypassed<0>(true);
     lowCut.template setBypassed<1>(true);
     lowCut.template setBypassed<2>(true);
     lowCut.template setBypassed<3>(true);
 
-    switch (chainSettings.lowCutSlope)
+    switch (slope)
     {
     case Slope_12:
     {
