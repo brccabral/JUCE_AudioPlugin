@@ -105,12 +105,7 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
     leftChain.prepare(spec);
     rightChain.prepare(spec);
 
-    auto chainSettings = getChainSettings(apvts);
-
-    updatePeakFilter(chainSettings);
-
-    updateLowCutFilters(chainSettings);
-    updateHighCutFilters(chainSettings);
+    updateFilters();
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
@@ -161,13 +156,7 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // * update parameters before process audio
-    auto chainSettings = getChainSettings(apvts);
-
-    updatePeakFilter(chainSettings);
-
-    updateLowCutFilters(chainSettings);
-    updateHighCutFilters(chainSettings);
+    updateFilters();
 
     // * wrap the buffer into left/right blocks that can be used by the Chain process
     juce::dsp::AudioBlock<float> block(buffer);
@@ -365,4 +354,15 @@ void AudioPlugin_JUCEAudioProcessor::updateHighCutFilters(const ChainSettings &c
 
     updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
     updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
+}
+
+void AudioPlugin_JUCEAudioProcessor::updateFilters()
+{
+    // * update parameters before process audio
+    auto chainSettings = getChainSettings(apvts);
+
+    updatePeakFilter(chainSettings);
+
+    updateLowCutFilters(chainSettings);
+    updateHighCutFilters(chainSettings);
 }
