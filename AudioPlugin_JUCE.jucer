@@ -22,19 +22,19 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="AudioPlugin_JUCE"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_core" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_events" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_graphics" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../JUCE-7.0.5/modules"/>
-        <MODULEPATH id="juce_dsp" path="../JUCE-7.0.5/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
