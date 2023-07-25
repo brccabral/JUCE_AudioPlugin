@@ -101,6 +101,11 @@ private:
     void updatePeakFilter(const ChainSettings &chainSettings);
     static void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 
+    template <typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType &lowCut,
+                         const CoefficientType &cutCoefficients,
+                         const ChainSettings &chainSettings);
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessor)
 };
