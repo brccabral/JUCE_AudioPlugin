@@ -490,7 +490,7 @@ void AudioPlugin_JUCEAudioProcessor::updatePeakFilter(const ChainSettings &chain
 }
 
 // * coefficients are allocated on the Heap, we need to dereference
-void updateCoefficients(Coefficients &old, const Coefficients &replacements)
+void AudioPlugin_JUCEAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements)
 {
     *old = *replacements;
 }

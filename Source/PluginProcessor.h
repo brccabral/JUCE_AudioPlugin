@@ -97,9 +97,9 @@ public:
 
 private:
     MonoChain leftChain, rightChain;
-    
-    void updatePeakFilter(const ChainSettings& chainSettings);
-    static void updateCoefficients(Coefficients& old, const Coefficients& replacements);
+
+    void updatePeakFilter(const ChainSettings &chainSettings);
+    static void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessor)
