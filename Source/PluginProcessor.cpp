@@ -115,7 +115,7 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
         (chainSettings.lowCutFreq + 1) * 2);
 
     auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
-    auto &rightLowCut = leftChain.get<ChainPositions::LowCut>();
+    auto &rightLowCut = rightChain.get<ChainPositions::LowCut>();
 
     updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
     updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
@@ -180,7 +180,7 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
         (chainSettings.lowCutFreq + 1) * 2);
 
     auto &leftLowCut = leftChain.get<ChainPositions::LowCut>();
-    auto &rightLowCut = leftChain.get<ChainPositions::LowCut>();
+    auto &rightLowCut = rightChain.get<ChainPositions::LowCut>();
 
     updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
     updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
