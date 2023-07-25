@@ -41,8 +41,10 @@ private:
         peakGainSlider,
         peakQualitySlider,
         lowCutFreqSlider,
-        highCutFreqSlider;
-    
+        highCutFreqSlider,
+        lowCutSlopeSlider,
+        highCutSlopeSlider;
+
     std::vector<juce::Component *> getComps();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessorEditor)
