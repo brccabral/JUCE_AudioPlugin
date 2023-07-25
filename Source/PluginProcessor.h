@@ -25,7 +25,14 @@ struct ChainSettings
     int lowCutSlope{0}, highCutSlope{0};
 };
 
-ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState &apvts);
+
+enum ChainPositions
+{
+    LowCut,
+    Peak,
+    HighCut
+};
 
 //==============================================================================
 /**

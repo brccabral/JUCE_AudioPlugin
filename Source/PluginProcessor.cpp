@@ -111,6 +111,9 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
                                                                                 chainSettings.peakFreq,
                                                                                 chainSettings.peakQuality,
                                                                                 juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+
+    leftChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
+    rightChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
@@ -160,6 +163,17 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
+
+    // * update parameters before process audio
+    auto chainSettings = getChainSettings(apvts);
+
+    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+                                                                                chainSettings.peakFreq,
+                                                                                chainSettings.peakQuality,
+                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+
+    leftChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
+    rightChain.get<ChainPositions::Peak>().coefficients = peakCoefficients;
 
     // * wrap the buffer into left/right blocks that can be used by the Chain process
     juce::dsp::AudioBlock<float> block(buffer);
