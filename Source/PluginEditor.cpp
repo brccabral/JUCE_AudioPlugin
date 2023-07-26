@@ -27,10 +27,17 @@ AudioPlugin_JUCEAudioProcessorEditor::AudioPlugin_JUCEAudioProcessorEditor(
 
     for (auto *comp : getComps())
         addAndMakeVisible(comp);
+
+    const auto &params = audioProcessor.getParameters();
+    for (auto param : params)
+        param->addListener(this);
 }
 
 AudioPlugin_JUCEAudioProcessorEditor::~AudioPlugin_JUCEAudioProcessorEditor()
 {
+    const auto &params = audioProcessor.getParameters();
+    for (auto param : params)
+        param->removeListener(this);
 }
 
 //==============================================================================
@@ -140,4 +147,18 @@ std::vector<juce::Component *> AudioPlugin_JUCEAudioProcessorEditor::getComps()
         &highCutFreqSlider,
         &lowCutSlopeSlider,
         &highCutSlopeSlider};
+}
+
+void AudioPlugin_JUCEAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue)
+{
+    parametersChanged.set(true);
+}
+
+void AudioPlugin_JUCEAudioProcessorEditor::timerCallback()
+{
+    if (parametersChanged.compareAndSetBool(false, true))
+    {
+        // * update themonochain
+        // * signal a repaint
+    }
 }

@@ -22,7 +22,9 @@ struct RotarySliderWithLabels : juce::Slider
 //==============================================================================
 /**
  */
-class AudioPlugin_JUCEAudioProcessorEditor : public juce::AudioProcessorEditor
+class AudioPlugin_JUCEAudioProcessorEditor : public juce::AudioProcessorEditor,
+                                             public juce::AudioProcessorParameter::Listener,
+                                             public juce::Timer
 {
 public:
     AudioPlugin_JUCEAudioProcessorEditor(AudioPlugin_JUCEAudioProcessor &);
@@ -31,6 +33,13 @@ public:
     //==============================================================================
     void paint(juce::Graphics &) override;
     void resized() override;
+
+    // * juce::AudioProcessorParameter::Listener
+    void parameterValueChanged(int parameterIndex, float newValue) override;
+    void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {}
+
+    // * juce::Timer
+    void timerCallback() override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -59,6 +68,9 @@ private:
         highCutSlopeSliderAttachment;
 
     MonoChain monoChain;
+
+    // * AudioProcessorParameter::Listener needs to be thread-safe and non-blocking
+    juce::Atomic<bool> parametersChanged{false};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessorEditor)
 };
