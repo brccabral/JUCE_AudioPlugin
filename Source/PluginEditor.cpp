@@ -51,6 +51,38 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
 
     auto sampleRate = audioProcessor.getSampleRate();
 
+    // * calculate Magnitude for each filter, combine them and store in the vector
+    std::vector<double> mags; // * magnitudes
+    mags.resize(w);
+
+    for (int i = 0; i < w; ++i)
+    {
+        double mag = 1.f;
+        auto freq = mapToLog10((double(i) / double(w)), 20.0, 20000.0);
+
+        if (!monoChain.isBypassed<ChainPositions::Peak>())
+            mag *= peak.coefficients->getMagnitudeForFrequency(freq, sampleRate);
+
+        if (!lowCut.isBypassed<0>())
+            mag *= lowCut.get<0>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!lowCut.isBypassed<1>())
+            mag *= lowCut.get<1>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!lowCut.isBypassed<2>())
+            mag *= lowCut.get<2>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!lowCut.isBypassed<3>())
+            mag *= lowCut.get<3>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+
+        if (!highCut.isBypassed<0>())
+            mag *= highCut.get<0>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!highCut.isBypassed<1>())
+            mag *= highCut.get<1>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!highCut.isBypassed<2>())
+            mag *= highCut.get<2>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+        if (!highCut.isBypassed<3>())
+            mag *= highCut.get<3>().coefficients->getMagnitudeForFrequency(freq, sampleRate);
+
+        mags[i] = Decibels::gainToDecibels(mag);
+    }
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
