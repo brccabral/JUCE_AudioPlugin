@@ -5,6 +5,10 @@
               pluginFormats="buildStandalone,buildVST3">
   <MAINGROUP id="LyzUSW" name="AudioPlugin_JUCE">
     <GROUP id="{3211EBBA-59F8-FBAB-AAB5-D289AC3DBBA4}" name="Source">
+      <FILE id="KoAlwd" name="PluginUtilities.cpp" compile="1" resource="0"
+            file="Source/PluginUtilities.cpp"/>
+      <FILE id="ZXZKfy" name="PluginUtilities.h" compile="0" resource="0"
+            file="Source/PluginUtilities.h"/>
       <FILE id="AQ5x9Y" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="DKumqb" name="PluginProcessor.h" compile="0" resource="0"
