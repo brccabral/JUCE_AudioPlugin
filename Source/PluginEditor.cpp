@@ -83,6 +83,29 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
 
         mags[i] = Decibels::gainToDecibels(mag);
     }
+
+    // * chart limits
+    const double outputMin = responseArea.getBottom();
+    const double outputMax = responseArea.getY();
+    auto map = [outputMin, outputMax](double input)
+    {
+        // * -24 to 24 comes from "Peak Gain"
+        return jmap(input, -24.0, 24.0, outputMin, outputMax);
+    };
+
+    // * draw chart
+    Path responseCurve;
+    responseCurve.startNewSubPath(responseArea.getX(), map(mags.front()));
+    for (size_t i = 1; i < mags.size(); ++i)
+    {
+        responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
+    }
+
+    g.setColour(Colours::orange);
+    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 1.f);
+
+    g.setColour(Colours::white);
+    g.strokePath(responseCurve, PathStrokeType(2.f));
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
