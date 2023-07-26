@@ -44,9 +44,17 @@ enum ChainPositions
 
 using Coefficients = Filter::CoefficientsPtr;
 
+// * we need to be free function because we will use it in the Editor.h
 void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 
+// * we need to be free function because we will use it in the Editor.h
 Coefficients makePeakFilter(const ChainSettings &chainSettings, double sampleRate);
+
+// * we need to be free function because we will use it in the Editor.h
+template <typename ChainType, typename CoefficientType>
+void updateCutFilter(ChainType &lowCut,
+                     const CoefficientType &cutCoefficients,
+                     const Slope &slope);
 
 //==============================================================================
 /**
@@ -103,11 +111,6 @@ private:
     MonoChain leftChain, rightChain;
 
     void updatePeakFilter(const ChainSettings &chainSettings);
-
-    template <typename ChainType, typename CoefficientType>
-    void updateCutFilter(ChainType &lowCut,
-                         const CoefficientType &cutCoefficients,
-                         const Slope &slope);
 
     void updateLowCutFilters(const ChainSettings &chainSettings);
     void updateHighCutFilters(const ChainSettings &chainSettings);

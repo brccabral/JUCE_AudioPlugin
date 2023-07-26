@@ -309,10 +309,11 @@ void AudioPlugin_JUCEAudioProcessor::updatePeakFilter(const ChainSettings &chain
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
 }
 
+// * we need to be free function because we will use it in the Editor.h
 template <typename ChainType, typename CoefficientType>
-void AudioPlugin_JUCEAudioProcessor::updateCutFilter(ChainType &lowCut,
-                                                     const CoefficientType &cutCoefficients,
-                                                     const Slope &slope)
+void updateCutFilter(ChainType &lowCut,
+                     const CoefficientType &cutCoefficients,
+                     const Slope &slope)
 {
     lowCut.template setBypassed<0>(true);
     lowCut.template setBypassed<1>(true);
