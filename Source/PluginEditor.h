@@ -19,18 +19,15 @@ struct RotarySliderWithLabels : juce::Slider
     }
 };
 
-//==============================================================================
-/**
- */
-class AudioPlugin_JUCEAudioProcessorEditor : public juce::AudioProcessorEditor,
-                                             public juce::AudioProcessorParameter::Listener,
-                                             public juce::Timer
+// * Draw chart
+// * we need as separated component so it doesn't draw on top of other components
+struct ResponseCurveComponent : juce::Component,
+                                juce::AudioProcessorParameter::Listener,
+                                juce::Timer
 {
-public:
-    AudioPlugin_JUCEAudioProcessorEditor(AudioPlugin_JUCEAudioProcessor &);
-    ~AudioPlugin_JUCEAudioProcessorEditor() override;
+    ResponseCurveComponent(AudioPlugin_JUCEAudioProcessor &);
+    ~ResponseCurveComponent();
 
-    //==============================================================================
     void paint(juce::Graphics &) override;
     void resized() override;
 
@@ -40,6 +37,28 @@ public:
 
     // * juce::Timer
     void timerCallback() override;
+
+private:
+    AudioPlugin_JUCEAudioProcessor &audioProcessor;
+
+    MonoChain monoChain;
+
+    // * AudioProcessorParameter::Listener needs to be thread-safe and non-blocking
+    juce::Atomic<bool> parametersChanged{false};
+};
+
+//==============================================================================
+/**
+ */
+class AudioPlugin_JUCEAudioProcessorEditor : public juce::AudioProcessorEditor
+{
+public:
+    AudioPlugin_JUCEAudioProcessorEditor(AudioPlugin_JUCEAudioProcessor &);
+    ~AudioPlugin_JUCEAudioProcessorEditor() override;
+
+    //==============================================================================
+    void paint(juce::Graphics &) override;
+    void resized() override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -67,10 +86,7 @@ private:
         lowCutSlopeSliderAttachment,
         highCutSlopeSliderAttachment;
 
-    MonoChain monoChain;
-
-    // * AudioProcessorParameter::Listener needs to be thread-safe and non-blocking
-    juce::Atomic<bool> parametersChanged{false};
+    ResponseCurveComponent responseCurveComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessorEditor)
 };
