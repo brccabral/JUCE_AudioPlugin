@@ -285,12 +285,12 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState &apvts)
     return settings;
 }
 
-void AudioPlugin_JUCEAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
+// * coefficients are allocated on the Heap, we need to dereference
+// * we need to be free function because we will use it in the Editor.h
+void updateCoefficients(Coefficients &old, const Coefficients &replacements)
 {
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
-                                                                                chainSettings.peakFreq,
-                                                                                chainSettings.peakQuality,
-                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
+    *old = *replacements;
+}
 
     updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);

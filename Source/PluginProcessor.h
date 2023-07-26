@@ -44,6 +44,8 @@ enum ChainPositions
 
 using Coefficients = Filter::CoefficientsPtr;
 
+void updateCoefficients(Coefficients &old, const Coefficients &replacements);
+
 //==============================================================================
 /**
  */
@@ -99,7 +101,6 @@ private:
     MonoChain leftChain, rightChain;
 
     void updatePeakFilter(const ChainSettings &chainSettings);
-    static void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 
     template <typename ChainType, typename CoefficientType>
     void updateCutFilter(ChainType &lowCut,
