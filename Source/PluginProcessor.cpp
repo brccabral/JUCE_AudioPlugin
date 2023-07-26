@@ -292,14 +292,21 @@ void updateCoefficients(Coefficients &old, const Coefficients &replacements)
     *old = *replacements;
 }
 
-    updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-    updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+// * makePeakFilter() is a free function because we will use it in the Editor.h
+Coefficients makePeakFilter(const ChainSettings &chainSettings, double sampleRate)
+{
+    return juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
+                                                               chainSettings.peakFreq,
+                                                               chainSettings.peakQuality,
+                                                               juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
 }
 
-// * coefficients are allocated on the Heap, we need to dereference
-void AudioPlugin_JUCEAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements)
+void AudioPlugin_JUCEAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
 {
-    *old = *replacements;
+    auto peakCoefficients = makePeakFilter(chainSettings, getSampleRate());
+
+    updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
 }
 
 template <typename ChainType, typename CoefficientType>
