@@ -34,8 +34,7 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(Colours::black);
 
-    auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.25);
+    auto responseArea = getLocalBounds();
     auto w = responseArea.getWidth();
 
     auto &lowCut = monoChain.get<ChainPositions::LowCut>();
