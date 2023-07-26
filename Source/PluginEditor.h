@@ -18,7 +18,7 @@ struct LookAndFeel : juce::LookAndFeel_V4
                           float sliderPosProportional,
                           float rotaryStartAngle,
                           float rotaryEndAngle,
-                          juce::Slider &) override{};
+                          juce::Slider &) override;
 
     void drawToggleButton(juce::Graphics &g,
                           juce::ToggleButton &toggleButton,
@@ -31,7 +31,7 @@ struct RotarySliderWithLabels : juce::Slider
     RotarySliderWithLabels(juce::RangedAudioParameter &rap, const juce::String &unitSuffix);
     ~RotarySliderWithLabels();
 
-    void paint(juce::Graphics &g) override{};
+    void paint(juce::Graphics &g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }
     juce::String getDisplayString() const;
