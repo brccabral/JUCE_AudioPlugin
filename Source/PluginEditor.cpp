@@ -31,6 +31,26 @@ void LookAndFeel::drawRotarySlider(juce::Graphics &g,
     // * border
     g.setColour(Colour(255u, 154u, 1u));
     g.drawEllipse(bounds, 1.f);
+
+    // * draw nob indicator
+    auto center = bounds.getCentre();
+    Path p;
+
+    Rectangle<float> r;
+    r.setLeft(center.getX() - 2);
+    r.setRight(center.getX() + 2);
+    r.setTop(bounds.getY());
+    r.setBottom(center.getY());
+
+    p.addRectangle(r);
+
+    jassert(rotaryStartAngle < rotaryEndAngle);
+
+    auto sliderAngRad = jmap(sliderPosProportional, 0.f, 1.f, rotaryStartAngle, rotaryEndAngle);
+
+    p.applyTransform(AffineTransform().rotated(sliderAngRad, center.getX(), center.getY()));
+
+    g.fillPath(p);
 }
 
 //==============================================================================
