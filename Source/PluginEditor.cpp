@@ -40,6 +40,17 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
 
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(Colours::black);
+
+    auto bounds = getLocalBounds();
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.25);
+    auto w = responseArea.getWidth();
+
+    auto &lowCut = monoChain.get<ChainPositions::LowCut>();
+    auto &peak = monoChain.get<ChainPositions::Peak>();
+    auto &highCut = monoChain.get<ChainPositions::HighCut>();
+
+    auto sampleRate = audioProcessor.getSampleRate();
+
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
