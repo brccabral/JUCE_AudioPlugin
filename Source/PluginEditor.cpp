@@ -31,6 +31,8 @@ AudioPlugin_JUCEAudioProcessorEditor::AudioPlugin_JUCEAudioProcessorEditor(
     const auto &params = audioProcessor.getParameters();
     for (auto param : params)
         param->addListener(this);
+
+    startTimerHz(60);
 }
 
 AudioPlugin_JUCEAudioProcessorEditor::~AudioPlugin_JUCEAudioProcessorEditor()
@@ -149,16 +151,26 @@ std::vector<juce::Component *> AudioPlugin_JUCEAudioProcessorEditor::getComps()
         &highCutSlopeSlider};
 }
 
+// * we added Editor as listener for any param change
+// * this sets "parametersChanged" which is checked in "timerCallback()" every 60Hz
 void AudioPlugin_JUCEAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue)
 {
     parametersChanged.set(true);
 }
 
+// * called every 60Hz, checks if "parametersChanged" has been set by any param as
+// * we added Editor as listener for param change
 void AudioPlugin_JUCEAudioProcessorEditor::timerCallback()
 {
     if (parametersChanged.compareAndSetBool(false, true))
     {
-        // * update themonochain
+        // * update the monochain
+        auto chainSettings = getChainSettings(audioProcessor.apvts);
+
+        auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+
         // * signal a repaint
+        repaint();
     }
 }
