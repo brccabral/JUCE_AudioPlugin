@@ -50,6 +50,9 @@ void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 // * we need to be free function because we will use it in the Editor.h
 Coefficients makePeakFilter(const ChainSettings &chainSettings, double sampleRate);
 
+auto makeLowCutFilter(const ChainSettings &chainSettings, double sampleRate);
+auto makeHighCutFilter(const ChainSettings &chainSettings, double sampleRate);
+
 // * we need to be free function because we will use it in the Editor.h
 template <typename ChainType, typename CoefficientType>
 void updateCutFilter(ChainType &lowCut,
