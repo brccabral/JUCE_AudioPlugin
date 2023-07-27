@@ -707,6 +707,13 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
 
     g.setColour(Colour(255u, 154u, 1u));
     g.drawFittedText(title, bounds, juce::Justification::centredTop, 1);
+
+    // * Nobs label
+    g.setColour(Colours::grey);
+    g.setFont(14);
+    g.drawFittedText("LowCut", lowCutSlopeSlider.getBounds(), juce::Justification::centredBottom, 1);
+    g.drawFittedText("Peak", peakQualitySlider.getBounds(), juce::Justification::centredBottom, 1);
+    g.drawFittedText("HighCut", highCutSlopeSlider.getBounds(), juce::Justification::centredBottom, 1);
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
