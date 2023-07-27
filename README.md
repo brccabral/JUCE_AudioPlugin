@@ -44,7 +44,7 @@ build and install **JUCE** with these config in VSCode.
 2. If you build **JUCE** using `cmake` and with `extras`, go to `$JUCE/build_dir/extras/Projucer/Projucer_artefacts/Release` and run `Projucer`
 3. If not, go to `$JUCE/extras/Projucer/Builds/LinuxMakefile` and run `make -j10`. Once it is build, go to `$JUCE/extras/Projucer/Builds/LinuxMakefile/build` and run `Projucer`
 4. Open `File`, then `Global Paths...`, set the paths to where you extracted/cloned **JUCE**.
-5. COnfigure the project in `Projucer` to select plugins `VST3` and `Standalone`.
+5. Configure the project in `Projucer` to select plugins `VST3` and `Standalone`.
 
 Follow the rest of the tutorial.
 
