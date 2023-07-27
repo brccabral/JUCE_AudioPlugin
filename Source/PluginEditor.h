@@ -97,13 +97,13 @@ private:
     Fifo<BlockType> fftDataFifo;
 };
 
-template<typename PathType>
+template <typename PathType>
 struct AnalyzerPathGenerator
 {
     /*
      converts 'renderData[]' into a juce::Path
      */
-    void generatePath(const std::vector<float>& renderData,
+    void generatePath(const std::vector<float> &renderData,
                       juce::Rectangle<float> fftBounds,
                       int fftSize,
                       float binWidth,
@@ -122,24 +122,24 @@ struct AnalyzerPathGenerator
         {
             return juce::jmap(v,
                               negativeInfinity, 0.f,
-                              float(bottom),   top);
+                              float(bottom), top);
         };
 
         auto y = map(renderData[0]);
 
-        jassert( !std::isnan(y) && !std::isinf(y) );
+        jassert(!std::isnan(y) && !std::isinf(y));
 
         p.startNewSubPath(0, y);
 
-        const int pathResolution = 2; //you can draw line-to's every 'pathResolution' pixels.
+        const int pathResolution = 2; // you can draw line-to's every 'pathResolution' pixels.
 
-        for( int binNum = 1; binNum < numBins; binNum += pathResolution )
+        for (int binNum = 1; binNum < numBins; binNum += pathResolution)
         {
             y = map(renderData[binNum]);
 
-            jassert( !std::isnan(y) && !std::isinf(y) );
+            jassert(!std::isnan(y) && !std::isinf(y));
 
-            if( !std::isnan(y) && !std::isinf(y) )
+            if (!std::isnan(y) && !std::isinf(y))
             {
                 auto binFreq = binNum * binWidth;
                 auto normalizedBinX = juce::mapFromLog10(binFreq, 20.f, 20000.f);
@@ -156,10 +156,11 @@ struct AnalyzerPathGenerator
         return pathFifo.getNumAvailableForReading();
     }
 
-    bool getPath(PathType& path)
+    bool getPath(PathType &path)
     {
         return pathFifo.pull(path);
     }
+
 private:
     Fifo<PathType> pathFifo;
 };
@@ -203,6 +204,32 @@ private:
     LookAndFeel lnf;
 };
 
+// * frequency spectrum chart
+struct PathProducer
+{
+    PathProducer(SingleChannelSampleFifo<AudioPlugin_JUCEAudioProcessor::BlockType> &scsf) : channelFifo(&scsf)
+    {
+        /*
+        48000 sample rate
+        2048 bins
+         48000 / 2048 = 23Hz every 23Hz will be a bin in the chart
+         */
+        channelFFTDataGenerator.changeOrder(FFTOrder::order2048);
+        monoBuffer.setSize(1, channelFFTDataGenerator.getFFTSize());
+    }
+
+    void process(juce::Rectangle<float> fftBounds, double sampleRate);
+    juce::Path getPath() { return channelFFTPath; }
+
+private:
+    SingleChannelSampleFifo<AudioPlugin_JUCEAudioProcessor::BlockType> *channelFifo;
+    juce::AudioBuffer<float> monoBuffer;
+    FFTDataGenerator<std::vector<float>> channelFFTDataGenerator;
+
+    AnalyzerPathGenerator<juce::Path> pathProducer;
+    juce::Path channelFFTPath;
+};
+
 // * Draw chart
 // * we need as separated component so it doesn't draw on top of other components
 struct ResponseCurveComponent : juce::Component,
@@ -236,13 +263,7 @@ private:
     juce::Rectangle<int> getRenderArea();
     juce::Rectangle<int> getAnalysisArea();
 
-    // * frequency spectrum
-    SingleChannelSampleFifo<AudioPlugin_JUCEAudioProcessor::BlockType> *leftChannelFifo;
-    juce::AudioBuffer<float> monoBuffer;
-    FFTDataGenerator<std::vector<float>> leftChannelFFTDataGenerator;
-
-    AnalyzerPathGenerator<juce::Path> pathProducer;
-    juce::Path leftChannelFFTPath;
+    PathProducer leftPathProducer, rightPathProducer;
 };
 
 //==============================================================================

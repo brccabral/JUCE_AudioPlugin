@@ -111,10 +111,10 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
     leftChannelFifo.prepare(samplesPerBlock);
     rightChannelFifo.prepare(samplesPerBlock);
 
-    osc.initialise([](float x)
-                   { return std::sin(x); });
-    osc.prepare(spec);
-    osc.setFrequency(440);
+    // osc.initialise([](float x)
+    //                { return std::sin(x); });
+    // osc.prepare(spec);
+    // osc.setFrequency(440);
 }
 
 void AudioPlugin_JUCEAudioProcessor::releaseResources()
@@ -173,6 +173,12 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     // buffer.clear();
     // juce::dsp::ProcessContextReplacing<float> stereoContext(block);
     // osc.setFrequency(JUCE_LIVE_CONSTANT(440));
+    // * this for() sends samples to only one channel, 0 right, 1 left
+    // for (int i = 0; i < buffer.getNumSamples(); ++i)
+    // {
+    //     buffer.setSample(JUCE_LIVE_CONSTANT(0), i, osc.processSample(0));
+    //     // buffer.setSample(0, i, osc.processSample(0));
+    // }
     // osc.process(stereoContext);
 
     auto leftBlock = block.getSingleChannelBlock(0);
