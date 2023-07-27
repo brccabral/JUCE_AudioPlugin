@@ -73,7 +73,41 @@ void LookAndFeel::drawRotarySlider(juce::Graphics &g,
 
 juce::String RotarySliderWithLabels::getDisplayString() const
 {
-    return juce::String(getValue());
+    // * if we can convert to AudioParameterChoice, return the name
+    if (auto *choiceParam = dynamic_cast<juce::AudioParameterChoice *>(param))
+        return choiceParam->getCurrentChoiceName();
+
+    juce::String str;
+    bool addK = false; // * if KHz
+
+    if (auto *floatParam = dynamic_cast<juce::AudioParameterFloat *>(param))
+    {
+        float val = getValue();
+
+        if (val > 999.f)
+        {
+            val /= 1000.f; // 1001 / 1000 = 1.001
+            addK = true;
+        }
+
+        str = juce::String(val, (addK ? 2 : 0)); // * val, 2 decimal places
+    }
+    else
+    {
+        // * if not AudioParameterFloat, throw an error to make sure we implement this
+        jassertfalse; // this shouldn't happen!
+    }
+
+    if (suffix.isNotEmpty())
+    {
+        str << " ";
+        if (addK)
+            str << "k";
+
+        str << suffix;
+    }
+
+    return str;
 }
 
 //==============================================================================
