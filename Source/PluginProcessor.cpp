@@ -170,10 +170,10 @@ void AudioPlugin_JUCEAudioProcessor::processBlock(juce::AudioBuffer<float> &buff
     // * wrap the buffer into left/right blocks that can be used by the Chain process
     juce::dsp::AudioBlock<float> block(buffer);
 
-    buffer.clear();
-    juce::dsp::ProcessContextReplacing<float> stereoContext(block);
-    osc.setFrequency(JUCE_LIVE_CONSTANT(440));
-    osc.process(stereoContext);
+    // buffer.clear();
+    // juce::dsp::ProcessContextReplacing<float> stereoContext(block);
+    // osc.setFrequency(JUCE_LIVE_CONSTANT(440));
+    // osc.process(stereoContext);
 
     auto leftBlock = block.getSingleChannelBlock(0);
     auto rightBlock = block.getSingleChannelBlock(1);
