@@ -122,7 +122,7 @@ struct AnalyzerPathGenerator
         {
             return juce::jmap(v,
                               negativeInfinity, 0.f,
-                              float(bottom), top);
+                              float(bottom + 10), top);
         };
 
         auto y = map(renderData[0]);
