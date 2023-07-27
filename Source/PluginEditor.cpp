@@ -519,6 +519,15 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
         g.strokePath(rightChannelFFTPath, PathStrokeType(1.f));
     }
 
+    // * chart border
+    Path border;
+    border.setUsingNonZeroWinding(false);
+    border.addRoundedRectangle(getRenderArea(), 4);
+    border.addRectangle(getLocalBounds());
+
+    g.setColour(Colours::darkgrey);
+    g.fillPath(border);
+
     // * draw chart box
     g.setColour(Colours::orange);
     g.drawRoundedRectangle(getRenderArea().toFloat(), 4.f, 1.f);
