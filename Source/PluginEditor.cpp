@@ -133,16 +133,17 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
     auto endAng = degreesToRadians(180.f - 45.f) + MathConstants<float>::twoPi;
 
     auto range = getRange();
+    auto sliderBounds = getSliderBounds();
 
+#ifdef DEBUG
     // * full component border
     g.setColour(Colours::red);
     g.drawRect(getLocalBounds());
 
-    auto sliderBounds = getSliderBounds();
-
     // * lookandfeel border
     g.setColour(Colours::yellow);
     g.drawRect(sliderBounds);
+#endif
 
     getLookAndFeel().drawRotarySlider(g,
                                       sliderBounds.getX(),
