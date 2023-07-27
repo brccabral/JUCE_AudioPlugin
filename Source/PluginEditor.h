@@ -36,6 +36,14 @@ struct RotarySliderWithLabels : juce::Slider
     int getTextHeight() const { return 14; }
     juce::String getDisplayString() const;
 
+    struct LabelPos
+    {
+        float pos;
+        juce::String label;
+    };
+
+    juce::Array<LabelPos> labels;
+
 private:
     juce::RangedAudioParameter *param;
     juce::String suffix;
