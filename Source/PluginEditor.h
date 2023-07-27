@@ -76,6 +76,8 @@ private:
 
     // * AudioProcessorParameter::Listener needs to be thread-safe and non-blocking
     juce::Atomic<bool> parametersChanged{false};
+
+    void updateChain();
 };
 
 //==============================================================================
