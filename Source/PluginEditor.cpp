@@ -300,7 +300,9 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
     }
 
     // * draw FFT
-    g.setColour(Colours::blue);
+    // * start drawing from the bottom of chart area
+    leftChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
+    g.setColour(Colours::skyblue);
     g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
 
     // * draw chart box
