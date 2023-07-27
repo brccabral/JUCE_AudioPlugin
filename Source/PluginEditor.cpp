@@ -299,9 +299,15 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
     }
 
+    // * draw FFT
+    g.setColour(Colours::blue);
+    g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
+
+    // * draw chart box
     g.setColour(Colours::orange);
     g.drawRoundedRectangle(getRenderArea().toFloat(), 4.f, 1.f);
 
+    // * draw filter curve
     g.setColour(Colours::white);
     g.strokePath(responseCurve, PathStrokeType(2.f));
 }
