@@ -177,7 +177,7 @@ struct LookAndFeel : juce::LookAndFeel_V4
     void drawToggleButton(juce::Graphics &g,
                           juce::ToggleButton &toggleButton,
                           bool shouldDrawButtonAsHighlighted,
-                          bool shouldDrawButtonAsDown) override{};
+                          bool shouldDrawButtonAsDown) override;
 };
 
 struct RotarySliderWithLabels : juce::Slider
@@ -315,6 +315,8 @@ private:
         peakBypassButtonAttachment,
         highcutBypassButtonAttachment,
         analyzerEnabledButtonAttachment;
+
+    LookAndFeel lnf;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin_JUCEAudioProcessorEditor)
 };
