@@ -263,9 +263,15 @@ private:
 
     void updateChain();
 
-    juce::Image background; // * grid lines
+    std::vector<float> getFrequencies();
+    std::vector<float> getGains();
+
+    void drawBackgroundGrid(juce::Graphics &g);
     juce::Rectangle<int> getRenderArea();
     juce::Rectangle<int> getAnalysisArea();
+    
+    juce::Path responseCurve;
+    void updateResponseCurve();
 
     PathProducer leftPathProducer, rightPathProducer;
 
