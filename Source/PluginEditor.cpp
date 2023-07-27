@@ -201,12 +201,22 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 }
 
 //==============================================================================
-ResponseCurveComponent::ResponseCurveComponent(AudioPlugin_JUCEAudioProcessor &p) : audioProcessor(p)
+ResponseCurveComponent::ResponseCurveComponent(AudioPlugin_JUCEAudioProcessor &p) : audioProcessor(p),
+                                                                                    leftChannelFifo(&audioProcessor.leftChannelFifo)
 {
 
     const auto &params = audioProcessor.getParameters();
     for (auto param : params)
         param->addListener(this);
+
+    /*
+    48000 sample rate
+    2048 bins
+     48000 / 2048 = 23Hz every 23Hz will be a bin in the chart
+     */
+
+    leftChannelFFTDataGenerator.changeOrder(FFTOrder::order2048);
+    monoBuffer.setSize(1, leftChannelFFTDataGenerator.getFFTSize());
 
     updateChain();
 
@@ -528,6 +538,26 @@ void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float new
 // * we added Editor as listener for param change
 void ResponseCurveComponent::timerCallback()
 {
+    // * tempIncomingBuffer has random size, we copy to monoBuffer in a fixed size
+    juce::AudioBuffer<float> tempIncomingBuffer;
+    while (leftChannelFifo->getNumCompleteBuffersAvailable() > 0)
+    {
+        if (leftChannelFifo->getAudioBuffer(tempIncomingBuffer))
+        {
+            auto size = tempIncomingBuffer.getNumSamples();
+
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, 0),
+                                              monoBuffer.getReadPointer(0, size),
+                                              monoBuffer.getNumSamples() - size);
+
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, monoBuffer.getNumSamples() - size),
+                                              tempIncomingBuffer.getReadPointer(0, 0),
+                                              size);
+
+            leftChannelFFTDataGenerator.produceFFTDataForRendering(monoBuffer, -48.f);
+        }
+    }
+
     if (parametersChanged.compareAndSetBool(false, true))
     {
         DBG("ResponseCurveComponent::timerCallback() parametersChanged");
