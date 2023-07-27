@@ -669,6 +669,44 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
 
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(Colours::black);
+
+    // * Title bar
+    Path curve;
+
+    auto bounds = getLocalBounds();
+    auto center = bounds.getCentre();
+
+    g.setFont(Font("Iosevka Term Slab", 30, 0)); // https://github.com/be5invis/Iosevka
+
+    String title{"PFM::C++ FOR MUSICIANS"};
+    g.setFont(30);
+    auto titleWidth = g.getCurrentFont().getStringWidth(title);
+
+    curve.startNewSubPath(center.x, 32);
+    curve.lineTo(center.x - titleWidth * 0.45f, 32);
+
+    auto cornerSize = 20;
+    auto curvePos = curve.getCurrentPosition();
+    curve.quadraticTo(curvePos.getX() - cornerSize, curvePos.getY(),
+                      curvePos.getX() - cornerSize, curvePos.getY() - 16);
+    curvePos = curve.getCurrentPosition();
+    curve.quadraticTo(curvePos.getX(), 2,
+                      curvePos.getX() - cornerSize, 2);
+
+    curve.lineTo({0.f, 2.f});
+    curve.lineTo(0.f, 0.f);
+    curve.lineTo(center.x, 0.f);
+    curve.closeSubPath();
+
+    g.setColour(Colour(97u, 18u, 167u));
+    g.fillPath(curve);
+
+    curve.applyTransform(AffineTransform().scaled(-1, 1));
+    curve.applyTransform(AffineTransform().translated(getWidth(), 0));
+    g.fillPath(curve);
+
+    g.setColour(Colour(255u, 154u, 1u));
+    g.drawFittedText(title, bounds, juce::Justification::centredTop, 1);
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
@@ -676,9 +714,10 @@ void AudioPlugin_JUCEAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
+    bounds.removeFromTop(4);
 
     auto analyzerEnabledArea = bounds.removeFromTop(25);
-    analyzerEnabledArea.setWidth(100);
+    analyzerEnabledArea.setWidth(50);
     analyzerEnabledArea.setX(5);
     analyzerEnabledArea.removeFromTop(2);
 
