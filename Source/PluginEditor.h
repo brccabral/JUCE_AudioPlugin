@@ -249,6 +249,11 @@ struct ResponseCurveComponent : juce::Component,
     // * juce::Timer
     void timerCallback() override;
 
+    void toggleAnalysisEnablement(bool enabled)
+    {
+        shouldShowFFTAnalysis = enabled;
+    }
+
 private:
     AudioPlugin_JUCEAudioProcessor &audioProcessor;
 
@@ -264,6 +269,8 @@ private:
     juce::Rectangle<int> getAnalysisArea();
 
     PathProducer leftPathProducer, rightPathProducer;
+
+    bool shouldShowFFTAnalysis = true;
 };
 
 //==============================================================================
