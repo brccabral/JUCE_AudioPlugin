@@ -78,6 +78,8 @@ private:
     juce::Atomic<bool> parametersChanged{false};
 
     void updateChain();
+
+    juce::Image background;
 };
 
 //==============================================================================
