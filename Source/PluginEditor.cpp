@@ -230,7 +230,7 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
     // * background = grid lines
     g.drawImage(background, getLocalBounds().toFloat());
 
-    auto responseArea = getLocalBounds();
+    auto responseArea = getAnalysisArea();
     auto w = responseArea.getWidth();
 
     auto &lowCut = monoChain.get<ChainPositions::LowCut>();
@@ -290,7 +290,7 @@ void ResponseCurveComponent::paint(juce::Graphics &g)
     }
 
     g.setColour(Colours::orange);
-    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 1.f);
+    g.drawRoundedRectangle(getRenderArea().toFloat(), 4.f, 1.f);
 
     g.setColour(Colours::white);
     g.strokePath(responseCurve, PathStrokeType(2.f));
@@ -312,11 +312,24 @@ void ResponseCurveComponent::resized()
         2000, 3000, 4000, 5000, 10000,
         20000};
 
-    g.setColour(Colours::white);
+    auto renderArea = getAnalysisArea();
+    auto left = renderArea.getX();
+    auto right = renderArea.getRight();
+    auto top = renderArea.getY();
+    auto bottom = renderArea.getBottom();
+    auto width = renderArea.getWidth();
+
+    Array<float> xs;
     for (auto f : freqs)
     {
         auto normX = mapFromLog10(f, 20.f, 20000.f);
-        g.drawVerticalLine(getWidth() * normX, 0.f, getHeight());
+        xs.add(left + width * normX);
+    }
+
+    g.setColour(Colours::dimgrey);
+    for (auto x : xs)
+    {
+        g.drawVerticalLine(x, top, bottom);
     }
 
     // * horizontal lines
@@ -325,8 +338,9 @@ void ResponseCurveComponent::resized()
 
     for (auto gDB : gain)
     {
-        auto y = jmap(gDB, -24.f, 24.f, float(getHeight()), 0.f);
-        g.drawHorizontalLine(y, 0, getWidth());
+        auto y = jmap(gDB, -24.f, 24.f, float(bottom), float(top));
+        g.setColour(gDB == 0.f ? Colour(0u, 172u, 1u) : Colours::darkgrey);
+        g.drawHorizontalLine(y, left, right);
     }
 }
 
@@ -472,4 +486,24 @@ void ResponseCurveComponent::updateChain()
 
     auto highCutCoefficients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
     updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoefficients, chainSettings.highCutSlope);
+}
+
+juce::Rectangle<int> ResponseCurveComponent::getRenderArea()
+{
+    auto bounds = getLocalBounds();
+
+    bounds.removeFromTop(12);
+    bounds.removeFromBottom(2);
+    bounds.removeFromLeft(20);
+    bounds.removeFromRight(20);
+
+    return bounds;
+}
+
+juce::Rectangle<int> ResponseCurveComponent::getAnalysisArea()
+{
+    auto bounds = getRenderArea();
+    bounds.removeFromTop(4);
+    bounds.removeFromBottom(4);
+    return bounds;
 }
