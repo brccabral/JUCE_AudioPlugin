@@ -364,11 +364,17 @@ void AudioPlugin_JUCEAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-
     auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.25);
+    // * to use JUCE_LIVE_CONSTANT, compile with DEBUG and run the standalone program
+    // * from the same folder as Makefile
+    float responseHeigh = JUCE_LIVE_CONSTANT(25);
+    float hRatio = responseHeigh / 100.f;
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * hRatio);
+    DBG(__FILE__);
 
     responseCurveComponent.setBounds(responseArea);
+
+    bounds.removeFromTop(5);
 
     auto lowCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto highCutArea = bounds.removeFromRight(bounds.getWidth() * 0.5); // * 50% of the rest (1 - 0.33)
