@@ -595,10 +595,11 @@ void ResponseCurveComponent::timerCallback()
     {
         DBG("ResponseCurveComponent::timerCallback() parametersChanged");
         updateChain();
-
-        // * signal a repaint
-        repaint();
     }
+
+    // * signal a repaint
+    // * now we need to repaint all the time because the FFT gets updated all the time
+    repaint();
 }
 
 void ResponseCurveComponent::updateChain()
