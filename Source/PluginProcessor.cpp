@@ -100,7 +100,8 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
 
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = 1; // * mono chain
+    // spec.numChannels = 1; // * mono chain
+    spec.numChannels = getTotalNumOutputChannels();
 
     leftChain.prepare(spec);
     rightChain.prepare(spec);
@@ -110,7 +111,6 @@ void AudioPlugin_JUCEAudioProcessor::prepareToPlay(double sampleRate, int sample
     leftChannelFifo.prepare(samplesPerBlock);
     rightChannelFifo.prepare(samplesPerBlock);
 
-    spec.numChannels = getTotalNumOutputChannels();
     osc.initialise([](float x)
                    { return std::sin(x); });
     osc.prepare(spec);
