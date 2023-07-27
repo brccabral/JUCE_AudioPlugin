@@ -127,7 +127,8 @@ struct AnalyzerPathGenerator
 
         auto y = map(renderData[0]);
 
-        jassert(!std::isnan(y) && !std::isinf(y));
+        if (std::isnan(y) || std::isinf(y))
+            y = bottom;
 
         p.startNewSubPath(0, y);
 
@@ -136,8 +137,6 @@ struct AnalyzerPathGenerator
         for (int binNum = 1; binNum < numBins; binNum += pathResolution)
         {
             y = map(renderData[binNum]);
-
-            jassert(!std::isnan(y) && !std::isinf(y));
 
             if (!std::isnan(y) && !std::isinf(y))
             {
