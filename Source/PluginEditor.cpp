@@ -558,6 +558,39 @@ void ResponseCurveComponent::timerCallback()
         }
     }
 
+    /*
+     if there are FFT data buffers to pull
+        if we can pull a buffer
+            generate a path
+     */
+    const auto fftBounds = getAnalysisArea().toFloat();
+    const auto fftSize = leftChannelFFTDataGenerator.getFFTSize();
+
+    /*
+     48000 / 2048 = 23hz  <- this is the bin width
+     */
+    const auto binWidth = audioProcessor.getSampleRate() / (double)fftSize;
+
+    while (leftChannelFFTDataGenerator.getNumAvailableFFTDataBlocks() > 0)
+    {
+        std::vector<float> fftData;
+        if (leftChannelFFTDataGenerator.getFFTData(fftData))
+        {
+            pathProducer.generatePath(fftData, fftBounds, fftSize, binWidth, -48.f);
+        }
+    }
+
+    /*
+     while there are paths that can be pull
+        pull as many as we can
+            display the most recent path
+     */
+
+    while (pathProducer.getNumPathsAvailable())
+    {
+        pathProducer.getPath(leftChannelFFTPath);
+    }
+
     if (parametersChanged.compareAndSetBool(false, true))
     {
         DBG("ResponseCurveComponent::timerCallback() parametersChanged");
