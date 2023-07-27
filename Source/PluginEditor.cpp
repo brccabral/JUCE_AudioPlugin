@@ -446,7 +446,12 @@ AudioPlugin_JUCEAudioProcessorEditor::AudioPlugin_JUCEAudioProcessorEditor(
       lowCutFreqSlider(*audioProcessor.apvts.getParameter("LowCut Freq"), "Hz"),
       highCutFreqSlider(*audioProcessor.apvts.getParameter("HighCut Freq"), "Hz"),
       lowCutSlopeSlider(*audioProcessor.apvts.getParameter("LowCut Slope"), "dB/Oct"),
-      highCutSlopeSlider(*audioProcessor.apvts.getParameter("HighCut Slope"), "db/Oct")
+      highCutSlopeSlider(*audioProcessor.apvts.getParameter("HighCut Slope"), "db/Oct"),
+      // * bypass
+      lowcutBypassButtonAttachment(audioProcessor.apvts, "LowCut Bypassed", lowcutBypassButton),
+      peakBypassButtonAttachment(audioProcessor.apvts, "Peak Bypassed", peakBypassButton),
+      highcutBypassButtonAttachment(audioProcessor.apvts, "HighCut Bypassed", highcutBypassButton),
+      analyzerEnabledButtonAttachment(audioProcessor.apvts, "Analyzer Enabled", analyzerEnabledButton)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -495,6 +500,16 @@ void AudioPlugin_JUCEAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
+
+    auto analyzerEnabledArea = bounds.removeFromTop(25);
+    analyzerEnabledArea.setWidth(100);
+    analyzerEnabledArea.setX(5);
+    analyzerEnabledArea.removeFromTop(2);
+
+    analyzerEnabledButton.setBounds(analyzerEnabledArea);
+
+    bounds.removeFromTop(5);
+
     // * to use JUCE_LIVE_CONSTANT, compile with DEBUG and run the standalone program
     // * from the same folder as Makefile
     float responseHeigh = JUCE_LIVE_CONSTANT(25);
@@ -509,12 +524,15 @@ void AudioPlugin_JUCEAudioProcessorEditor::resized()
     auto lowCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto highCutArea = bounds.removeFromRight(bounds.getWidth() * 0.5); // * 50% of the rest (1 - 0.33)
 
+    lowcutBypassButton.setBounds(lowCutArea.removeFromTop(25));
     lowCutFreqSlider.setBounds(lowCutArea.removeFromTop(lowCutArea.getHeight() * 0.5));
     lowCutSlopeSlider.setBounds(lowCutArea);
 
+    highcutBypassButton.setBounds(highCutArea.removeFromTop(25));
     highCutFreqSlider.setBounds(highCutArea.removeFromTop(highCutArea.getHeight() * 0.5));
     highCutSlopeSlider.setBounds(highCutArea);
 
+    peakBypassButton.setBounds(bounds.removeFromTop(25));
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
     peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5)); // * 50% of the rest (1 - 0.33)
     peakQualitySlider.setBounds(bounds);
@@ -530,7 +548,11 @@ std::vector<juce::Component *> AudioPlugin_JUCEAudioProcessorEditor::getComps()
         &highCutFreqSlider,
         &lowCutSlopeSlider,
         &highCutSlopeSlider,
-        &responseCurveComponent};
+        &responseCurveComponent,
+        &lowcutBypassButton,
+        &peakBypassButton,
+        &highcutBypassButton,
+        &analyzerEnabledButton};
 }
 
 // * we added Editor as listener for any param change
