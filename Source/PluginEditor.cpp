@@ -714,6 +714,12 @@ void AudioPlugin_JUCEAudioProcessorEditor::paint(juce::Graphics &g)
     g.drawFittedText("LowCut", lowCutSlopeSlider.getBounds(), juce::Justification::centredBottom, 1);
     g.drawFittedText("Peak", peakQualitySlider.getBounds(), juce::Justification::centredBottom, 1);
     g.drawFittedText("HighCut", highCutSlopeSlider.getBounds(), juce::Justification::centredBottom, 1);
+
+    // * build date
+    auto buildDate = Time::getCompilationDate().toString(true, false);
+    auto buildTime = Time::getCompilationDate().toString(false, true);
+    g.setFont(12);
+    g.drawFittedText("Build: " + buildDate + "\n" + buildTime, highCutSlopeSlider.getBounds().withY(6), Justification::topRight, 2);
 }
 
 void AudioPlugin_JUCEAudioProcessorEditor::resized()
